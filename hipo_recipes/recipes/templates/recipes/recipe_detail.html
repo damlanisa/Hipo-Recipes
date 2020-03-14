@@ -16,6 +16,12 @@
         </div>
         <h2 class="article-title">{{ object.title }}</h2>
         <p class="article-content">{{ object.content }}</p>
+        <ul class="list-group w-50 my-2" style="align-self: center;">
+            <h4>Ingredients:</h4>
+            {% for ingredient in object.ingredients.all %}
+            <li class="list-group-item list-group-item-secondary">{{ ingredient.name }}</li>
+            {% endfor %}
+        </ul>
     </div>
 </article>
 {% endblock content %}

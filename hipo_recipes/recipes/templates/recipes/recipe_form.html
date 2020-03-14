@@ -9,6 +9,12 @@
                 New Recipe
             </legend>
             {{ form|crispy }}
+            <small class="text-muted">Hold down Ctrl(Windows)/Command(Mac) to select multiple ingredients
+            </small>
+            <div>
+            <small class="text-muted">Not found the ingredient you looking for?<a class="ml-2" href="{% url 'ingredient-create' %}">Add ingredient here!</a>
+            </small>
+        </div>
         </fieldset>
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Post</button>
