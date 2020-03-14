@@ -7,7 +7,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Recipe
+from .models import Recipe, Ingredient
 
 
 def home(request):
@@ -30,7 +30,7 @@ class RecipeDetailView(DetailView):
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     model = Recipe
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'ingredients']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -61,3 +61,9 @@ class RecipeDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == recipe.author:
             return True
         return False
+
+
+class IngredientCreateView(LoginRequiredMixin, CreateView):
+    model = Ingredient
+    fields = ['name']
+    success_url = '/recipes/create/'
