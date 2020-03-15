@@ -30,7 +30,7 @@ class RecipeDetailView(DetailView):
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     model = Recipe
-    fields = ['title', 'content', 'ingredients']
+    fields = ['title', 'content', 'image', 'difficulty', 'ingredients']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -39,7 +39,7 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
 
 class RecipeUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Recipe
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'image', 'difficulty', 'ingredients']
 
     def form_valid(self, form):
         form.instance.author = self.request.user

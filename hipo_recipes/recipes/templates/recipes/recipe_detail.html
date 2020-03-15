@@ -1,9 +1,9 @@
 {% extends "recipes/base.html" %}
 {% block content %}
 <article class="media content-section">
-    <img class="rounded-circle article-img" src="{{ object.author.profile.image }}">
     <div class="media-body">
         <div class="article-metadata">
+            <img class="rounded-circle account-img" src="{{ object.image.url }}">
             <a class="mr-2">{{ object.author }}</a>
             <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
             {% if object.author == user %}
@@ -11,15 +11,28 @@
                 <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'recipe-update' object.id %}">Update Recipe</a>
                 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'recipe-delete' object.id %}">Delete Recipe</a>
             </div>
-
             {% endif %}
         </div>
-        <h2 class="article-title">{{ object.title }}</h2>
+        <h2 class="article-title">{{ object.title }} | <strong class="d-inline" style="font-size: 20px;">Difficulty:</strong>
+            {% if object.difficulty == 1 %}
+            <a class="text-success d-inline" style="font-size: 20px;">{{ object.get_difficulty_display }} &#x1F60B;</a>
+            {% elif object.difficulty == 2 %}
+            <a class="text-warning d-inline" style="font-size: 20px;">{{ object.get_difficulty_display }} &#x1F61C;</a>
+            {% elif object.difficulty == 3 %}
+            <a class="text-danger d-inline" style="font-size: 20px;">{{ object.get_difficulty_display }} &#x1F61D;</a>
+            {% endif %}
+        </h2>
         <p class="article-content">{{ object.content }}</p>
         <ul class="list-group w-50 my-2" style="align-self: center;">
             <h4>Ingredients:</h4>
             {% for ingredient in object.ingredients.all %}
-            <li class="list-group-item list-group-item-secondary">{{ ingredient.name }}</li>
+            {% if object.difficulty == 1 %}
+            <li class="list-group-item list-group-item-success">{{ ingredient.name }}</li>
+            {% elif object.difficulty == 2 %}
+            <li class="list-group-item list-group-item-warning">{{ ingredient.name }}</li>
+            {% elif object.difficulty == 3 %}
+            <li class="list-group-item list-group-item-danger">{{ ingredient.name }}</li>
+            {% endif %}
             {% endfor %}
         </ul>
     </div>
