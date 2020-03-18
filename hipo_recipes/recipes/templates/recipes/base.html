@@ -20,7 +20,7 @@
 
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #dc143c">
             <div class="container">
                 <a class="navbar-brand mr-4" href="{% url 'recipes-home' %}">Hipo Recipes</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
@@ -28,20 +28,20 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
-                    <div class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link" href="{% url 'recipes-home' %}">Home</a>
+                    <div class="navbar-nav mr-auto" >
+                        <a class="nav-item nav-link" style="color: #000000" href="{% url 'recipes-home' %}">Home</a>
                         {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{% url 'recipe-create' %}">Create Recipe</a>
+                        <a class="nav-item nav-link" style="color: #000000" href="{% url 'recipe-create' %}">Create Recipe</a>
                         {% endif %}
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-item nav-link" style="color: #ffffff" href="{% url 'profile' %}">Profile</a>
+                        <a class="nav-item nav-link" style="color: #ffffff" href="{% url 'logout' %}">Logout</a>
                         {% else %}
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        <a class="nav-item nav-link" style="color: #ffffff" href="{% url 'login' %}">Login</a>
+                        <a class="nav-item nav-link" style="color: #ffffff" href="{% url 'register' %}">Register</a>
                         {% endif %}
                     </div>
                 </div>
@@ -49,28 +49,7 @@
         </nav>
     </header>
     <main role="main" class="container">
-        <div class="row">
-            <div class="col-md-8">
-                {% if messsages %}
-                {% for message in messsages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-                {% endif %}
-                {% block content %}{% endblock %}
-            </div>
-            <div class="col-md-4">
-                <div class="content-section">
-                    <h3>Ingredients</h3>
-                    <p class='text-muted'>
-                        <ul class="list-group">
-                            <li class="list-group-item list-group-item-light">Most used ingredients</li>
-                        </ul>
-                    </p>
-                </div>
-            </div>
-        </div>
+            {% block content %}{% endblock %}
     </main>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
