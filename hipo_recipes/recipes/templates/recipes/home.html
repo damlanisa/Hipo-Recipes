@@ -5,7 +5,8 @@
           <div class="media-body">
             <div class="article-metadata">
               <img class="rounded-circle account-img" src="{{ recipe.image.url }}">
-              <a class="mr-2">{{ recipe.author }}</a>
+              <small class="p-3 mb-2 bg-warning text-dark">{{ recipe.author }}</small>
+              <small class="p-3 mb-2 bg-success text-white">Like: {{ recipe.likes }}</small>
               <small class="text-muted">{{ recipe.date_posted|date:"F d, Y" }}</small>
             </div>
             <h2><a class="article-title" href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a></h2>
