@@ -1,11 +1,11 @@
 {% extends "recipes/base.html" %}
 {% block content %}
-  <form method="GET" action="{% url 'search' %}">
-    <input name="q" placeholder="Dishes, Ingredients">
-    <button class="btn btn-info btn-sm my-2 ml-1" type="submit">
-      Search
-    </button>
-  </form>
+<form method="GET" action="{% url 'search' %}">
+  <input name="q" placeholder="Dishes, Ingredients">
+  <button class="btn btn-danger btn-sm my-2 ml-1" type="submit">
+    Search
+  </button>
+</form>
 <div class="row">
   <div class="col-md-8">
     {% for recipe in recipes %}
@@ -13,24 +13,40 @@
       <div class="media-body">
         <div class="article-metadata">
           <img class="rounded-circle account-img" src="{{ recipe.image.url }}">
-          <small class="p-3 mb-2 bg-warning text-dark">{{ recipe.author }}</small>
-          <small class="p-3 mb-2 bg-success text-white">Like: {{ recipe.likes.count }}</small>
-          <small class="text-muted">{{ recipe.date_posted|date:"F d, Y" }}</small>
+          <small class="p-2 mb-2 bg-warning text-dark">Created by: {{ recipe.author }}</small>
+          <small class="p-2 mb-2 bg-success text-white">Like: {{ recipe.likes.count }}</small>
+          <small class="text-muted"> &#x1F5D3;{{ recipe.date_posted|date:"F d, Y" }}</small>
         </div>
         <h2><a class="article-title" href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a></h2>
         <p class="article-content">{{ recipe.content }}</p>
       </div>
     </article>
     {% endfor %}
+    {% if is_paginated %}
+    {% if page_obj.has_previous %}
+    <a class="btn btn-outline-danger mb-4" href="?page=1">First</a>
+    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <a class="btn btn-danger mb-4" href="?page={{ num }}">{{ num }}</a>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+    <a class="btn btn-outline-danger mb-4" href="?page={{ num }}">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+    {% endif %}
   </div>
   <div class="col-md-4">
     <div class="content-section">
-      <h3>Ingredients</h3>
+      <h4><a class="article-title">Most Used Ingredients</a></h4>
       <p class='text-muted'>
         <ul class="list-group">
-          Most used ingredients
           {% for ingredient in ingredients %}
-          <a class="article-title" href='/search-results/?q={{ ingredient.name }}'>{{ ingredient }}
+          <a class="article-title" style="color:#dc143c" href='/search-results/?q={{ ingredient.name }}'>{{ ingredient }}
             ({{ ingredient.count }})</a></h2>
           {% endfor %}
         </ul>

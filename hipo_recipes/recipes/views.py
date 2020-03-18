@@ -32,12 +32,14 @@ def search(request):
 
 
 class RecipeListView(ListView):
+    paginate_by = 3
     model = Recipe
     template_name = 'recipes/home.html'
+    context_object_name = 'recipes'
+    ordering = ['-date_posted']
 
     def get_context_data(self, **kwargs):
         context = super(RecipeListView, self).get_context_data(**kwargs)
-        context['recipes'] = Recipe.objects.all().order_by('-date_posted')
         context['ingredients'] = Ingredient.objects.annotate(count=Count('recipes')).order_by('-count')[:5]
         return context
 
