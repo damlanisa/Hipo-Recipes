@@ -61,29 +61,27 @@
     <div class="media-body">
         <div class="article-metadata">
             <img class="rounded-circle account-img" src="{{ recipe.image.url }}">
-            <a class="mr-2">{{ recipe.author }}</a>
-            <small class="text-muted">{{ recipe.date_posted|date:"F d, Y" }}</small>
+            <a class="p-2 mb-2 bg-warning text-dark">{{ recipe.author }}</a>
+            <small class="text-muted">{{ recipe.date_posted|date:"F d, Y" }} &#x1F5D3;</small>
             {% if recipe.author == user %}
             <div>
-                <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'recipe-update' recipe.id %}">Update Recipe</a>
-                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'recipe-delete' recipe.id %}">Delete Recipe</a>
+                <a class="btn btn-success btn-sm mt-1 mb-3" href="{% url 'recipe-update' recipe.id %}">Update Recipe</a>
+                <a class="btn btn-danger btn-sm mt-1 mb-3" href="{% url 'recipe-delete' recipe.id %}">Delete Recipe</a>
             </div>
             {% endif %}
             <form method="POST">
                 {% csrf_token %}
                 {% if recipe.is_user_liked %}
-                <div class="btn btn-secondary btn-sm my-1 ml-2" id="like" onclick="likeRecipe();" style="cursor: pointer;">Like</div>
+                <div class="btn btn-success btn-sm my-1 ml-2" id="like" onclick="likeRecipe();">Like</div>
                 <small class="bg-light text-dark" id="like_count"> {{ recipe.like_count }}</small>
                 {% else %}
                 <div class="btn btn-info btn-sm my-1 ml-2" id="like" onclick="likeRecipe();" style="cursor: pointer;">Like</div>
                 <small class="bg-light text-dark" id="like_count"> {{ recipe.like_count }}</small>
                 {% endif %}
                 
-                <div style="cursor: pointer;" class="btn btn-info btn-sm"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Vote
+                <div style="cursor: pointer;" class="btn btn-info btn-sm ml-2 mb-2"
+                    data-toggle="dropdown">Vote
                         <div class="bg-light text-dark" id="user-rate">{{ recipe.user_rate }}</div>
-                        
                         <div class="dropdown-menu">
                             <a class="dropdown-item" onclick="rateRecipe('1');">1</a>
                             <a class="dropdown-item" onclick="rateRecipe('2');">2</a>
