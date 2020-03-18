@@ -22,15 +22,17 @@ def search(request):
         recipes = Recipe.objects.none()
         for key in search_keys:
             recipes |= Recipe.objects.annotate(search=SearchVector('ingredients__name', 'title', 'content')
-                                               ).filter(search=key).distinct('id')
+                                               ).filter(search=key)
     else:
-        search_keys = request.GET.get('ing').split()
-        for key in search_keys:
-            recipes = Recipe.objects.annotate(search=SearchVector('ingredients__name')
-                                              ).filter(search__icontains=key)
+        ingredient_name = request.GET.get('ing')
+        try:
+            ingredient = Ingredient.objects.get(name=ingredient_name)
+            recipes = ingredient.recipes.all()
+        except Ingredient.ObjectDoesNotExist:
+            recipes = Recipe.objects.none()
 
     context = {
-        'recipes': recipes,
+        'recipes': recipes.distinct('id'),
         'ingredients': Ingredient.objects.annotate(count=Count('recipes')).order_by('-count')[:5]
     }
     return render(request, template, context)
@@ -54,7 +56,9 @@ class RecipeDetailView(DetailView):
     context_object_name = 'recipe'
 
     def get_queryset(self):
-        return Recipe.objects.annotate(rate_average=Sum('rates__points') / Count('rates')).all()
+        return Recipe.objects.annotate(
+            rate_average=Cast(Sum('rates__points'), FloatField()) / Cast(Count('rates'), FloatField())
+        ).all()
 
     def get_object(self, queryset=None):
         recipe = super().get_object(queryset)
@@ -114,20 +118,16 @@ def like_recipe(request, pk):
         recipe = Recipe.objects.get(pk=pk)
         like = recipe.likes.filter(user=request.user).first()
         if like:
-            if like.is_liked:
-                like.is_liked = False
-                like.save()
-            else:
-                like.is_liked = True
-                like.save()
+            like.is_liked = not like.is_liked
+            like.save()
         else:
             like = Like(user=request.user, recipe=recipe, is_liked=True)
             like.save()
 
-        likes = recipe.likes.filter(is_liked=True).count()
+        like_count = recipe.likes.filter(is_liked=True).count()
 
         response = {
-            "likes": likes,
+            "like_count": like_count,
             "is_liked": like.is_liked
         }
         return JsonResponse(response)
@@ -142,7 +142,7 @@ def rate_recipe(request, pk):
             rate.points = int(request.POST['rate'])
             rate.save()
         else:
-            rate = Rate(user=request.user, recipe=recipe, points=request.POST['rate'])
+            rate = Rate(user=request.user, recipe=recipe, points=int(request.POST['rate']))
             rate.save()
 
         recipe = Recipe.objects.annotate(
@@ -150,7 +150,7 @@ def rate_recipe(request, pk):
         ).get(pk=pk)
 
         response = {
-            "rate_average": recipe.rate_average,
+            "rate_average": round(recipe.rate_average, 2),
             "user_rate": rate.points
         }
         return JsonResponse(response)

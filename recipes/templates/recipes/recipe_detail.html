@@ -17,16 +17,15 @@
     }
 
     function likeRecipe() {
-        console.log(getCookie('csrftoken'));
         $.ajax({
             url: window.location.pathname + 'like/',
             data: {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
             },
             method: 'POST',
             dataType: 'json',
             success: function (data) {
-                $("#like_count").html(data["likes"]);
+                $("#like_count").html(data["like_count"]);
                 if (data["is_liked"] == true) {
                     $("#like").removeClass("btn-info").addClass("btn-secondary");
                 } else {
@@ -43,7 +42,7 @@
             url: window.location.pathname + 'rate/',
             data: {
                 'rate': rate,
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
             },
             method: 'POST',
             dataType: 'json',
@@ -88,7 +87,7 @@
                             <a class="dropdown-item" onclick="rateRecipe('4');">4</a>
                             <a class="dropdown-item" onclick="rateRecipe('5');">5</a>
                         </div>
-                </div> | <small class="bg-light text-dark" id="rate-ratio">{{ recipe.rate_average }} / 5</small>
+                </div> | <small class="bg-light text-dark" id="rate-ratio">{{ recipe.rate_average|floatformat:2 }} / 5</small>
             </form>
    
         </div>
