@@ -63,11 +63,12 @@ class RecipeDetailView(DetailView):
     def get_object(self, queryset=None):
         recipe = super().get_object(queryset)
         recipe.like_count = recipe.likes.filter(is_liked=True).count()
-        recipe.is_user_liked = recipe.likes.filter(user=self.request.user, is_liked=True).exists()
-        if recipe.rates.filter(user=self.request.user).exists():
-            recipe.user_rate = recipe.rates.get(user=self.request.user).points
-        else:
-            recipe.user_rate = None
+        recipe.is_user_liked = recipe.likes.filter(user=self.request.user, is_liked=True).exists() if self.request.user.is_authenticated else False
+        if self.request.user.is_authenticated:
+            if recipe.rates.filter(user=self.request.user).exists():
+                recipe.user_rate = recipe.rates.get(user=self.request.user).points
+            else:
+                recipe.user_rate = None
         return recipe
 
 
