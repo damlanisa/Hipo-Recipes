@@ -12,6 +12,7 @@ from .views import (
 
 urlpatterns = [
     path('', RecipeListView.as_view(), name='recipes-home'),
+    path('search-results/', views.search, name='search'),
     path('recipes/<int:pk>/', RecipeDetailView.as_view(), name='recipe-detail'),
     path('recipes/create/', RecipeCreateView.as_view(), name='recipe-create'),
     path('recipes/<int:pk>/update/', RecipeUpdateView.as_view(), name='recipe-update'),

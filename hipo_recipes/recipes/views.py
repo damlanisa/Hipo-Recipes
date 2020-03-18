@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.postgres.search import SearchVector
 from django.db.models import Sum, Count, FloatField
 from django.db.models.functions import Cast
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -14,18 +15,31 @@ from django.views.generic import (
 from .models import Recipe, Ingredient, Like, Rate
 
 
-def home(request):
+def search(request):
+    template = 'recipes/home.html'
+    search_keys = request.GET.get('q').split()
+
+    for key in search_keys:
+        recipes = Recipe.objects.annotate(search=SearchVector('ingredients__name'),).filter(search__icontains=key)
+        recipes = Recipe.objects.annotate(search=SearchVector('title'),).filter(search__icontains=key)
+        recipes = Recipe.objects.annotate(search=SearchVector('content'),).filter(search__icontains=key)
+
     context = {
-        'recipes': Recipe.objects.all()
+        'recipes': recipes.order_by('-date_posted'),
+        'ingredients': Ingredient.objects.annotate(count=Count('recipes')).order_by('-count')[:5]
     }
-    return render(request, 'recipes/home.html', context)
+    return render(request, template, context)
 
 
 class RecipeListView(ListView):
     model = Recipe
     template_name = 'recipes/home.html'
-    context_object_name = 'recipes'
-    ordering = ['-date_posted']
+
+    def get_context_data(self, **kwargs):
+        context = super(RecipeListView, self).get_context_data(**kwargs)
+        context['recipes'] = Recipe.objects.all().order_by('-date_posted')
+        context['ingredients'] = Ingredient.objects.annotate(count=Count('recipes')).order_by('-count')[:5]
+        return context
 
 
 class RecipeDetailView(DetailView):

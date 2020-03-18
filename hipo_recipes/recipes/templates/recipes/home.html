@@ -1,17 +1,41 @@
 {% extends "recipes/base.html" %}
 {% block content %}
+  <form method="GET" action="{% url 'search' %}">
+    <input name="q" placeholder="Dishes, Ingredients">
+    <button class="btn btn-info btn-sm my-2 ml-1" type="submit">
+      Search
+    </button>
+  </form>
+<div class="row">
+  <div class="col-md-8">
     {% for recipe in recipes %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <img class="rounded-circle account-img" src="{{ recipe.image.url }}">
-              <small class="p-3 mb-2 bg-warning text-dark">{{ recipe.author }}</small>
-              <small class="p-3 mb-2 bg-success text-white">Like: {{ recipe.likes }}</small>
-              <small class="text-muted">{{ recipe.date_posted|date:"F d, Y" }}</small>
-            </div>
-            <h2><a class="article-title" href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a></h2>
-            <p class="article-content">{{ recipe.content }}</p>
-          </div>
-        </article>
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <img class="rounded-circle account-img" src="{{ recipe.image.url }}">
+          <small class="p-3 mb-2 bg-warning text-dark">{{ recipe.author }}</small>
+          <small class="p-3 mb-2 bg-success text-white">Like: {{ recipe.likes.count }}</small>
+          <small class="text-muted">{{ recipe.date_posted|date:"F d, Y" }}</small>
+        </div>
+        <h2><a class="article-title" href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a></h2>
+        <p class="article-content">{{ recipe.content }}</p>
+      </div>
+    </article>
     {% endfor %}
+  </div>
+  <div class="col-md-4">
+    <div class="content-section">
+      <h3>Ingredients</h3>
+      <p class='text-muted'>
+        <ul class="list-group">
+          Most used ingredients
+          {% for ingredient in ingredients %}
+          <a class="article-title" href='/search-results/?q={{ ingredient.name }}'>{{ ingredient }}
+            ({{ ingredient.count }})</a></h2>
+          {% endfor %}
+        </ul>
+      </p>
+    </div>
+  </div>
+</div>
 {% endblock content %}
