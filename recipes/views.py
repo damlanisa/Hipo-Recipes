@@ -152,7 +152,7 @@ def rate_recipe(request, pk):
         ).get(pk=pk)
 
         response = {
-            "rate_average": round(recipe.rate_average, 2),
+            "rate_average": format(recipe.rate_average, '.2f'),
             "user_rate": rate.points
         }
         return JsonResponse(response)
