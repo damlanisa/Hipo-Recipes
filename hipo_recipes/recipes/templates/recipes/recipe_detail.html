@@ -48,7 +48,7 @@
             method: 'POST',
             dataType: 'json',
             success: function (data) {
-                $("#user-rate").html(data["user_rate"]);
+                $("#user-rate").html('Vote: ' + data["user_rate"]);
                 $("#rate-ratio").html(data["rate_average"] + ' / 5');
             },
             error: function(request, status, error){
@@ -72,16 +72,15 @@
             <form method="POST">
                 {% csrf_token %}
                 {% if recipe.is_user_liked %}
-                <div class="btn btn-success btn-sm my-1 ml-2" id="like" onclick="likeRecipe();">Like</div>
+                <div class="btn btn-secondary btn-sm my-1 ml-2 mb-2" id="like" onclick="likeRecipe();">Like</div>
                 <small class="bg-light text-dark" id="like_count"> {{ recipe.like_count }}</small>
                 {% else %}
-                <div class="btn btn-info btn-sm my-1 ml-2" id="like" onclick="likeRecipe();" style="cursor: pointer;">Like</div>
+                <div class="btn btn-info btn-sm my-1 ml-2 mb-2" id="like" onclick="likeRecipe();" style="cursor: pointer;">Like</div>
                 <small class="bg-light text-dark" id="like_count"> {{ recipe.like_count }}</small>
                 {% endif %}
                 
-                <div style="cursor: pointer;" class="btn btn-info btn-sm ml-2 mb-2"
-                    data-toggle="dropdown">Vote
-                        <div class="bg-light text-dark" id="user-rate">{{ recipe.user_rate }}</div>
+                <div class="btn btn-info btn-sm my-1 ml-2 mb-2" data-toggle="dropdown">
+                        <div class="" id="user-rate">Vote: {{ recipe.user_rate }}</div>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" onclick="rateRecipe('1');">1</a>
                             <a class="dropdown-item" onclick="rateRecipe('2');">2</a>
