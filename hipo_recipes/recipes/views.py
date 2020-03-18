@@ -17,15 +17,20 @@ from .models import Recipe, Ingredient, Like, Rate
 
 def search(request):
     template = 'recipes/home.html'
-    search_keys = request.GET.get('q').split()
-
-    for key in search_keys:
-        recipes = Recipe.objects.annotate(search=SearchVector('ingredients__name'),).filter(search__icontains=key)
-        recipes = Recipe.objects.annotate(search=SearchVector('title'),).filter(search__icontains=key)
-        recipes = Recipe.objects.annotate(search=SearchVector('content'),).filter(search__icontains=key)
+    if request.GET.get('q'):
+        search_keys = request.GET.get('q').split()
+        recipes = Recipe.objects.none()
+        for key in search_keys:
+            recipes |= Recipe.objects.annotate(search=SearchVector('ingredients__name', 'title', 'content')
+                                               ).filter(search=key).distinct('id')
+    else:
+        search_keys = request.GET.get('ing').split()
+        for key in search_keys:
+            recipes = Recipe.objects.annotate(search=SearchVector('ingredients__name')
+                                              ).filter(search__icontains=key)
 
     context = {
-        'recipes': recipes.order_by('-date_posted'),
+        'recipes': recipes,
         'ingredients': Ingredient.objects.annotate(count=Count('recipes')).order_by('-count')[:5]
     }
     return render(request, template, context)
