@@ -23,7 +23,7 @@ class Recipe(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     difficulty = models.IntegerField(default='1', choices=DIFFICULTY_CHOICES)
-    ingredients = models.ManyToManyField(Ingredient)
+    ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
     image = models.ImageField(default='/default_recipe.jpeg', upload_to='recipe_pics')
 
     def __str__(self):
