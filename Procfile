@@ -1,1 +1,1 @@
-web: gunicorn hipo_recipes.hipo_recipes.wsgi
+web: gunicorn hipo_recipes.wsgi
