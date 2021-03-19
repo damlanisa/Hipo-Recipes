@@ -13,7 +13,7 @@ flake8==3.7.9
 gunicorn==20.0.4
 jmespath==0.9.5
 mccabe==0.6.1
-Pillow==7.0.0
+Pillow==8.1.1
 psycopg2-binary==2.8.4
 pycodestyle==2.5.0
 pyflakes==2.1.1
